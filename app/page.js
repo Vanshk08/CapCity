@@ -8,8 +8,9 @@ import Header from "./components/Header"
 import List from "./components/List"
 import Token from "./components/Token"
 import Trade from "./components/Trade"
-// IMPORTANT: Use the NAMED IMPORT method that worked previously
+// Assuming these are defined in your components folder
 import { Footer } from "./components/Footer" 
+import Dashboard from "./components/Dashboard" 
 
 // ABIs & Config
 import Factory from "./abis/Factory.json"
@@ -26,6 +27,8 @@ export default function Home() {
   const [showCreate, setShowCreate] = useState(false)
   const [showTrade, setShowTrade] = useState(false)
   const [status, setStatus] = useState("")
+  // New state for the Dashboard/App view
+  const [showDashboard, setShowDashboard] = useState(false) 
 
   const TARGET_CHAIN_ID_HEX = "0x7A69" // 31337 Hardhat
 
@@ -42,6 +45,16 @@ export default function Home() {
   function toggleTrade(token) {
     setToken(token)
     showTrade ? setShowTrade(false) : setShowTrade(true)
+  }
+
+  // Logic to toggle the main App/Dashboard view
+  function toggleDashboard() {
+    // If opening dashboard, ensure other modals are closed for safety
+    if (!showDashboard) {
+      setShowCreate(false);
+      setShowTrade(false);
+    }
+    setShowDashboard(prev => !prev);
   }
 
   async function ensureNetwork() {
@@ -146,152 +159,172 @@ export default function Home() {
 
   useEffect(() => {
     loadBlockchainData()
-  }, [showCreate, showTrade])
+  }, [showCreate, showTrade, showDashboard]) // Reload tokens after any modal action
 
   return (
     <div className="page">
-      <Header account={account} onConnect={connectWallet} />
+      <Header 
+        account={account} 
+        onConnect={connectWallet} 
+        toggleDashboard={toggleDashboard} 
+      />
 
       <main>
-        <section className="hero">
-          <div className="hero__content">
-            <div className="eyebrow">fun.pump · creator launchpad</div>
-            <h1>
-              Own the Future of Streaming.<br />
-              <span className="accent">Trade Your Favorite Creators.</span>
-            </h1>
-            <p className="hero__sub">
-              The platform where audience engagement drives the value of creator tokens.
-              Get in early and participate in the growth.
-            </p>
-            <div className="hero__actions">
-              <button onClick={openCreate} className="btn-primary" disabled={!factory || !account}>
-                {!account ? "Connect wallet to start" : "Start Trading Now"}
-              </button>
-              <a href="#how-it-works" className="btn-secondary">
-                Learn How It Works
-              </a>
-            </div>
-            {status && <p className="status muted">{status}</p>}
-            <div className="hero__meta">
-              <span>Live on localhost network</span>
-              <span>Fee: {ethers.formatUnits(fee || 0n, 18)} ETH</span>
-            </div>
-          </div>
-
-          <div className="hero__card">
-            <p className="card__label">Live price</p>
-            <p className="card__value">$0.00000042</p>
-            <p className="card__change">+12%</p>
-            <p className="card__note">The **Live** Price Graph</p>
-          </div>
-        </section>
-        {/* --- START HOW IT WORKS SECTION --- */}
-        <section id="how-it-works" className="how-it-works">
-          <h1>How It Works</h1>
-
-          <div className="how-it-works__grid">
-            {/* Block 1: For Creators (Listing) */}
-            <div className="process-card">
-              <h3>1. Creator Launches Token</h3>
-              <p>A streamer connects their wallet and pays a small fee to deploy a unique token contract for their brand. The token is instantly tradable via a pre-set bonding curve.</p>
-            </div>
-
-            {/* Block 2: For Users (Buying) */}
-            <div className="process-card">
-              <h3>2. Community Invests</h3>
-              <p>Fans use ETH to purchase the creator's tokens. These purchases increase the token price and contribute ETH to the contract's liquidity pool.</p>
-            </div>
-
-            {/* Block 3: The Mechanism (Price) */}
-            <div className="process-card">
-              <h3>3. Value Grows</h3>
-              <p>Token price is directly tied to demand. As more people buy, the price increases exponentially, rewarding the earliest and most dedicated supporters.</p>
-            </div>
-          </div>
-        </section>
-        {/* --- END HOW IT WORKS SECTION --- */}
-        {/* --- START FEATURES SECTION (NEW) --- */}
-        <section id="features" className="features">
-          <h1>The Power of Capacity</h1>
-
-          <div className="features__grid">
-            <div className="feature-card">
-              <h3>Live Price Discovery</h3>
-              <p>Token price is determined by real-time viewer count, tips, and direct trading volume via a transparent **Bonding Curve** smart contract.</p>
-            </div>
-
-            <div className="feature-card">
-              <h3>Creator Ownership</h3>
-              <p>Every creator instantly launches their own personalized, audience-backed token (e.g., $ALICE, $BOB). No need for complex liquidity pools.</p>
-            </div>
-
-            <div className="feature-card">
-              <h3>Instant Liquidity</h3>
-              <p>Buy or sell creator tokens instantly at any time. The Bonding Curve acts as the automated market maker, guaranteeing trades with minimal slippage.</p>
-            </div>
-          </div>
-        </section>
-        {/* --- END FEATURES SECTION --- */}
-
-        {/* --- START TOKENOMICS SECTION (NEW) --- */}
-        <section id="tokenomics" className="tokenomics">
-          <h1>TOKENOMICS AND MECHANICS</h1>
-
-          <div className="tokenomics__content">
-            <div className="tokenomics__text">
-              <h2>The Bonding Curve</h2>
-              <p>Every creator token is deployed with a non-linear **Bonding Curve**. This means the price of the token increases exponentially as more tokens are bought, rewarding early holders.</p>
-              <p>When you buy a token, you deposit ETH into a contract, and the token is minted at the calculated price. When you sell, the token is burned, and you receive ETH back from the reserve.</p>
-              <p></p> {/* Wrapped in <p> tag */}
-            </div>
-            <div className="tokenomics__data">
-              <h3>Fee Structure</h3>
-              <p className="label">Platform Fee (On Listing)</p>
-              <p className="value">{ethers.formatUnits(fee || 0n, 18)} ETH</p>
-              
-              <p className="label">Buy/Sell Transaction Fee</p>
-              <p className="value">5%</p>
-              
-              <p className="label">Fee Allocation</p>
-              <ul className="allocation-list">
-                <li>3% goes to the **Creator**</li>
-                <li>2% goes to the **Liquidity Reserve**</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-        {/* --- END TOKENOMICS SECTION --- */}
         
-        <div className="listings">
-          <h1>new listings</h1>
+        {/* HERO SECTION - New structure and class names */}
+        <section id="hero" className="hero-section">
+            <div className="hero-content">
+                <h1 className="headline">
+                    Own the Future of Streaming. <span className="accent-text">Trade Your Favorite Creators.</span>
+                </h1>
+                <p className="subheadline">
+                    The revolutionary platform where audience engagement directly drives the value of creator tokens.
+                    Get in early and participate in the growth.
+                </p>
+                <div className="hero-cta">
+                    {/* CTA: Opens the App/Dashboard component */}
+                    <button onClick={toggleDashboard} className="primary-btn large-btn">Start Trading Now</button>
+                    {/* Secondary CTA: Links to the explanation section */}
+                    <a href="#howitworks" className="secondary-btn large-btn">Learn How It Works</a>
+                </div>
+            </div>
+            
+            <div className="hero-visual">
+                <div className="visual-placeholder">
+                    <div className="chart-mockup">
+                        <span className="mock-price up">$0.0000042</span>
+                        <span className="mock-price-change">+12%</span>
+                    </div>
+                    <p>The **Live** Price Graph</p>
+                </div>
+            </div>
+        </section>
 
-          <div className="tokens">
-            {!account ? (
-              <p className="muted">Please connect wallet</p>
-            ) : tokens.length === 0 ? (
-              <p className="muted">No tokens listed</p>
-            ) : (
-              tokens.map((token, index) => (
-                <Token
-                  toggleTrade={toggleTrade}
-                  token={token}
-                  key={index}
-                />
-              ))
-            )}
-          </div>
-        </div>
+        <hr className="section-divider" />
 
-        {showCreate && (
-          <List toggleCreate={toggleCreate} fee={fee} provider={provider} factory={factory} />
-        )}
+        {/* FEATURES SECTION */}
+        <section id="features" className="features-section">
+            <h2 className="section-title">The Power of StreamToken</h2>
+            <p className="section-subtitle">We turn viewers into vested participants in a creator's success.</p>
+            
+            <div className="feature-grid">
+                <div className="feature-card">
+                    <span className="icon">🔗</span>
+                    <h3>Live Price Discovery</h3>
+                    <p>Token price is determined by real-time viewer count, tips, and direct trading volume via a transparent **Bonding Curve** smart contract.</p>
+                </div>
+                <div className="feature-card">
+                    <span className="icon">💰</span>
+                    <h3>Creator Ownership</h3>
+                    <p>Every creator instantly launches their own personalized, audience-backed token (e.g., $ALICE, $BOB). No need for complex liquidity pools.</p>
+                </div>
+                <div className="feature-card">
+                    <span className="icon">⚡</span>
+                    <h3>Instant Liquidity</h3>
+                    <p>Buy or sell creator tokens instantly at any time. The Bonding Curve acts as the automated market maker, guaranteeing trades with minimal slippage.</p>
+                </div>
+            </div>
+        </section>
 
-        {showTrade && (
-          <Trade toggleTrade={toggleTrade} token={token} provider={provider} factory={factory} />
-        )}
+        <hr className="section-divider" />
+        
+        {/* LIVE TOKEN LISTINGS - Existing Logic */}
+        <section id="listings" className="token-list-section">
+            <h2 className="section-title">Featured Creator Tokens</h2>
+            <p className="section-subtitle">Jump into the action and trade a token now.</p>
+
+            <div className="token-grid" id="featured-token-grid">
+                {/* EXISTING TOKEN MAPPING LOGIC REMAINS */}
+                {!account ? (
+                    <p className="muted" style={{ gridColumn: '1 / -1', textAlign: 'center' }}>Please connect wallet to view live listings</p>
+                ) : tokens.length === 0 ? (
+                    <p className="muted" style={{ gridColumn: '1 / -1', textAlign: 'center' }}>No tokens listed yet</p>
+                ) : (
+                    tokens.map((token, index) => (
+                        // Existing Token component usage
+                        <Token
+                            toggleTrade={toggleTrade} 
+                            token={token}
+                            key={index}
+                        />
+                    ))
+                )}
+            </div>
+
+            {/* CTA: Opens the App/Dashboard component */}
+            <button onClick={toggleDashboard} className="primary-btn large-btn" style={{ marginTop: '40px' }}>View All Live Streams</button>
+        </section>
+
+        <hr className="section-divider" />
+
+        {/* HOW IT WORKS / TOKENOMICS SECTION */}
+        <section id="howitworks" className="how-it-works-section">
+            <h2 className="section-title">Tokenomics Explained Simply</h2>
+            <div className="token-steps">
+                <div className="step-card">
+                    <div className="step-number">1</div>
+                    <h3>Go Live & Launch Your Token</h3>
+                    <p>Your journey starts by going live. Creators can stream anything they love — gaming, IRL, music, or chill hangouts. The moment you start a stream, your creator token is automatically launched on the platform.</p>
+                </div>
+                <div className="step-card">
+                    <div className="step-number">2</div>
+                    <h3>Trade Tokens Using ETH</h3>
+                    <p>As viewers join, they can buy and sell your token using ETH, trading it in real time while your stream is live. The more people watch and trade, the more your token grows. You earn from stream engagement + token activity, creating a brand-new way to monetize your content.</p>
+                </div>
+                <div className="step-card">
+                    <div className="step-number">3</div>
+                    <h3>Grow With Your Community</h3>
+                    <p>Fans get a new way to support you: by holding your token. As your community grows, so does the value of their support. It’s simple, transparent, and built to reward both creators and fans.</p>
+                </div>
+            </div>
+            <div className="cta-banner">
+                <p>Ready to jump into the most dynamic creator market?</p>
+                {/* CTA: Opens the App/Dashboard component */}
+                <button onClick={toggleDashboard} className="primary-btn large-btn">Launch App Now</button>
+            </div>
+        </section>
+
+        <hr className="section-divider" />
+
+        {/* CREATOR CTA SECTION */}
+        <section className="creator-cta-section">
+            <h2 className="section-title">Are You a Creator?</h2>
+            <p className="section-subtitle">Monetize your audience engagement like never before. Launch your token in minutes.</p>
+            <div className="creator-benefits">
+                <ul>
+                    <li>💸 **Instant Payouts:** Receive ETH directly from trades and tips.</li>
+                    <li>🔗 **True Ownership:** Control your own token and community metrics.</li>
+                    <li>🚀 **Zero Fees to Launch:** We cover the initial cost of token creation.</li>
+                </ul>
+            </div>
+            {/* CTA: Opens the App/Dashboard component */}
+            <button onClick={toggleDashboard} className="primary-btn large-btn">Launch Your Token Instantly</button>
+        </section>
+
       </main>
+      
+      {/* MODALS/APP VIEWS - Existing Logic (Renders outside main) */}
+      {showCreate && (
+        <List toggleCreate={toggleCreate} fee={fee} provider={provider} factory={factory} />
+      )}
 
+      {showTrade && (
+        <Trade toggleTrade={toggleTrade} token={token} provider={provider} factory={factory} />
+      )}
+      
+      {/* DASHBOARD/APP VIEW - Renders only when toggled */}
+      {showDashboard && (
+        <Dashboard 
+          toggleDashboard={toggleDashboard} 
+          account={account}
+          tokens={tokens}
+          factory={factory}
+          toggleCreate={toggleCreate} // Pass logic to allow launching token from dashboard
+          toggleTrade={toggleTrade}   // Pass logic to allow trading from dashboard (if needed)
+        />
+      )}
+      
+      {/* Footer component rendered here */}
       <Footer />
       
     </div>

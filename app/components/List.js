@@ -15,19 +15,26 @@ function List({ toggleCreate, fee, provider, factory }) {
 
   return (
     <div className="list">
-      <h2>list new token</h2>
+      <div className="list__content-wrapper"> {/* NEW CONTAINER TO HOLD THE MODAL CONTENT */}
+        <h2>Launch Your Creator Token</h2> 
 
-      <div className="list__description">
-        <p>fee: {ethers.formatUnits(fee, 18)} ETH</p>
+        <div className="list__description">
+          <p>Creation Fee: **{ethers.formatUnits(fee, 18)} ETH**</p>
+        </div>
+
+        <form action={listHandler}>
+          <input type="text" name="name" placeholder="Token Name (e.g., StreamToken)" required minLength="3" />
+          <input type="text" name="ticker" placeholder="Ticker Symbol (e.g., ST)" required minLength="2" maxLength="5" />
+          
+          <div className="form__actions"> {/* NEW CONTAINER FOR BUTTONS */}
+            {/* Using the new primary-btn for the main action */}
+            <button type="submit" className="primary-btn large-btn">List Token</button> 
+
+            {/* Using the new secondary-btn for the cancel action */}
+            <button type="button" onClick={toggleCreate} className="secondary-btn large-btn">Cancel</button>
+          </div>
+        </form>
       </div>
-
-      <form action={listHandler}>
-        <input type="text" name="name" placeholder="name" />
-        <input type="text" name="ticker" placeholder="ticker" />
-        <input type="submit" value="[ list ]" />
-      </form>
-
-      <button onClick={toggleCreate} className="btn--fancy">[ cancel ]</button>
     </div>
   );
 }

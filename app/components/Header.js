@@ -1,30 +1,32 @@
-import Link from "next/link";
+import React from 'react';
 
 function Header({ account, onConnect }) {
 
   return (
-    <header>
-      <div className="brand-wrap">
-        <p className="brand">Capacity</p>
+    <header className="landing-navbar">
+      {/* Logo (Stays on the far left) */}
+      <div className="logo">
+        StreamToken
       </div>
 
-      <div className="header__right">
-        <nav className="nav-links">
-          <Link href="#features">Features</Link>
-          <Link href="#tokenomics">Tokenomics</Link>
-        </nav>
+      {/* Navigation and Actions (This group will be centered) */}
+      <div className="navigation-wrapper">
+        <a href="#features" className="nav-link">Features</a>
+        <a href="#tokenomics" className="nav-link">Tokenomics</a>
+        
+        {/* Launch App Button (Now part of the main centered group) */}
+        <a href="#listings" className="primary-btn small-btn">Launch App</a>
 
-        <div className="header__actions">
-          <a className="pill pill--primary" href="#listings">Launch App</a>
-          {account ? (
-            <button onClick={onConnect} className="btn--fancy">
-              Connected · {account.slice(0, 6) + '...' + account.slice(38, 42)}
-            </button>
-          ) : (
-            <button onClick={onConnect} className="btn--fancy">Connect wallet</button>
-          )}
-        </div>
+        {/* Connect Wallet / Connected Account (Now part of the main centered group) */}
+        {account ? (
+          <p className="connected-account">
+            {account.slice(0, 6) + '...' + account.slice(38, 42)}
+          </p>
+        ) : (
+          <button onClick={onConnect} className="primary-btn small-btn">Connect Wallet</button>
+        )}
       </div>
+
     </header>
   );
 }
