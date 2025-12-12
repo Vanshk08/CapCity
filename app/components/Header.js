@@ -11,13 +11,15 @@ function Header({ account, onConnect }) {
 
       {/* Navigation and Actions (This group will be centered) */}
       <div className="navigation-wrapper">
+        {/* Keeping Features link */}
         <a href="#features" className="nav-link">Features</a>
-        <a href="#tokenomics" className="nav-link">Tokenomics</a>
         
-        {/* Launch App Button (Now part of the main centered group) */}
+        {/* **REMOVED: <a href="#tokenomics" className="nav-link">Tokenomics</a>** */}
+        
+        {/* Launch App Button */}
         <a href="#listings" className="primary-btn small-btn">Launch App</a>
 
-        {/* Connect Wallet / Connected Account (Now part of the main centered group) */}
+        {/* Connect Wallet / Connected Account */}
         {account ? (
           <p className="connected-account">
             {account.slice(0, 6) + '...' + account.slice(38, 42)}
