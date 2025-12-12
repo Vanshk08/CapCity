@@ -96,6 +96,7 @@ header .brand {
   text-transform: uppercase;
   background: linear-gradient(120deg, #00f5c8, #7c5dff);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
   position: relative;
@@ -1484,4 +1485,11 @@ a {
         padding-inline: 1rem;
     }
 }
+
+
+
+
+
+
+
 

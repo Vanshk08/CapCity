@@ -6,7 +6,7 @@ function Header({ account, onConnect }) {
     <header className="landing-navbar">
       {/* Logo (Stays on the far left) */}
       <div className="logo">
-        StreamToken
+        CapCity
       </div>
 
       {/* Navigation and Actions (This group will be centered) */}
