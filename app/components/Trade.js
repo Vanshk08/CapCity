@@ -40,28 +40,52 @@ function Trade({ toggleTrade, token, provider, factory }) {
   }, [])
 
   return (
-    <div className="trade">
-      <h2>trade</h2>
-
-      <div className="token__details">
-        <p className="name">{token.name}</p>
-        <p>creator: {token.creator.slice(0, 6) + '...' + token.creator.slice(38, 42)}</p>
-        <img src={token.image} alt="Pepe" width={256} height={256} />
-        <p>marketcap: {ethers.formatUnits(token.raised, 18)} ETH</p>
-        <p>base cost: {ethers.formatUnits(cost, 18)} ETH</p>
+    // 1. New full-screen wrapper
+    <div className="trade-dashboard">
+      
+      {/* 2. Go Back Arrow/Button to close the modal */}
+      <div className="go-back-arrow" onClick={() => toggleTrade(null)}>
+        &larr; Go Back
       </div>
 
-      {token.sold >= limit || token.raised >= target ? (
-        <p className="disclaimer">target reached!</p>
-      ) : (
-        <form action={buyHandler}>
-          <input type="number" name="amount" min={1} max={10000} placeholder="1" />
-          <input type="submit" value="[ buy ]" />
-        </form>
-      )
-      }
+      {/* 3. Central content container */}
+      <div className="trade-content">
+        
+        {/* Header Section */}
+        <div className="trade__header">
+            <h2>{token.name} Token Trading</h2>
+        </div>
+        
+        {/* Token Details Section - Now centralized and cleaner */}
+        <div className="token__details trade__token-info"> 
+          <img src={token.image} alt={token.name} width={256} height={256} />
+          <p>Creator: {token.creator.slice(0, 6) + '...' + token.creator.slice(38, 42)}</p>
+          <p>Marketcap: {ethers.formatUnits(token.raised, 18)} ETH</p>
+          {/* Highlight Base Cost */}
+          <p className="accent">Base Cost: {ethers.formatUnits(cost, 18)} ETH</p>
+        </div>
 
-      <button onClick={toggleTrade} className="btn--fancy">[ cancel ]</button>
+        {/* Trade Form Wrapper */}
+        <div className="trade-form-wrapper">
+          {token.sold >= limit || token.raised >= target ? (
+            <p className="disclaimer">Target Reached! No more tokens for sale.</p>
+          ) : (
+            // Form action remains unchanged
+            <form action={buyHandler}>
+              <input type="number" name="amount" min={1} max={10000} placeholder="Enter Amount" />
+              
+              {/* Using form__actions from the List component for button alignment */}
+              <div className="form__actions"> 
+                {/* Use the primary button class */}
+                <input type="submit" value="Buy Tokens" className="btn-primary" />
+                {/* Explicit Cancel button using secondary style */}
+                <button type="button" onClick={toggleTrade} className="btn-secondary">Cancel</button> 
+              </div>
+            </form>
+          )}
+        </div>
+        
+      </div>
     </div >
   );
 }
