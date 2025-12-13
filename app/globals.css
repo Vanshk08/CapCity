@@ -561,94 +561,112 @@ main .listings h1 {
     padding: 12px 20px;
     width: auto;
 }
-.trade p {
+/* ======================================================= */
+/* --- NEW STYLES: TRADE AS DASHBOARD OVERLAY --- */
+/* ======================================================= */
 
-  font-family: var(--font-body);
-
-  font-size: 1.10rem;
-
-  text-transform: lowercase;
-
-  color: var(--muted);
-
-}
-
-
-
-.trade .disclaimer {
-
-  font-size: 1.50rem;
-
-  font-weight: bold;
-
-  padding: 2em;
-
-}
-
-
-
-.trade form {
-
+/* Full screen overlay for Trade modal */
+.trade-dashboard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95); /* Darker overlay for DApp feel */
+  backdrop-filter: blur(15px);
+  z-index: 2000; /* High z-index */
   display: flex;
-
   justify-content: center;
-
   align-items: center;
+  overflow-y: auto;
+}
 
-  flex-direction: column;
-
-  gap: 2em;
-
-  padding: 2em;
-
-
-
-  background: var(--card);
-
+.trade-content {
+  width: 95%;
+  max-width: 450px; /* Focused width for the trade form */
+  background: var(--background);
   border: 1px solid var(--card-border);
-
-  border-radius: 18px;
-
+  border-radius: 16px;
+  padding: 30px;
   box-shadow: var(--shadow);
-
+  overflow-y: auto;
+  margin-top: 50px; 
+  text-align: center;
 }
 
-
-
-.trade form input[type="number"] {
-
-  background-color: var(--background);
-
-  color: var(--foreground);
-
-  border: none;
-
-
-
-  width: 200px;
-
-  padding: 1.50em;
-
-  border-radius: 10px;
-
-  border: 1px solid var(--card-border);
-
-  font-family: var(--font-body);
-
-  outline: 0;
-
-  transition: 160ms ease border-color, 160ms ease box-shadow;
-
+.trade__header h2 {
+  font-family: var(--font-brand);
+  font-size: 2rem;
+  color: var(--accent); 
+  margin-bottom: 20px;
 }
 
+/* Styling the image and details block */
+.trade__token-info img {
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
 
+.trade__token-info p {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 5px;
+}
 
-.trade form input[type="number"]:focus {
+/* Trade form specific styles */
+.trade-form-wrapper form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
 
-  border-color: rgba(25, 180, 255, 0.7);
+.trade-form-wrapper form input[type="number"] {
+    background-color: var(--card); 
+    color: var(--foreground);
+    border: 1px solid var(--card-border);
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    outline: 0;
+    transition: 160ms ease border-color, 160ms ease box-shadow;
+    text-align: center;
+}
+.trade-form-wrapper form input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(0, 245, 200, 0.18);
+}
 
-  box-shadow: 0 0 0 4px rgba(25, 180, 255, 0.16);
+/* Replicate Go Back Arrow styling */
+.trade-dashboard .go-back-arrow {
+    position: fixed; /* Must be fixed to stay relative to viewport */
+    top: 25px;
+    left: 15px;
+    z-index: 2001; 
+    color: var(--muted);
+    background: transparent;
+    border-radius: 999px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
 
+.trade-dashboard .go-back-arrow:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.05);
 }
 /* --- FOOTER STYLES (Place at the end of globals.css) --- */
 
@@ -1373,7 +1391,7 @@ a {
 }
 
 .dashboard__header h2 {
-  font-family: var(--font-accent);
+  font-family: var(--font-brand);
   font-size: 2.2rem;
   color: var(--accent);
 }
